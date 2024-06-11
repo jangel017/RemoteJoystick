@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joystick Client</title>
+</head>
+<body>
+    <h1>Joystick Client</h1>
+    <div id="status"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const status = document.getElementById('status');
+
+            // Función para enviar datos al servidor
+            function sendDataToServer(data) {
+                // Enviar los datos al servidor
+                fetch('http://[YOUR_VM_IP]:8000/update', {  // Reemplaza [YOUR_VM_IP] con la IP pública de tu VM
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Server response:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending data to server:', error);
+                });
+            }
+
+            // Simulación de lectura de estado de joystick
+            setInterval(() => {
+                const joystickData = {
+                    x: Math.floor(Math.random() * 256),  // Ejemplo: valor aleatorio para el eje X (0-255)
+                    y: Math.floor(Math.random() * 256),  // Ejemplo: valor aleatorio para el eje Y (0-255)
+                    buttons: [Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]  // Ejemplo: estado aleatorio para 2 botones (0 o 1)
+                };
+
+                // Enviar los datos al servidor
+                sendDataToServer(joystickData);
+            }, 1000);  // Intervalo de 1 segundo
+        });
+    </script>
+</body>
+</html>
