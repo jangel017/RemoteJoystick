@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import threading
 import time
 
 app = Flask(__name__)
+CORS(app)  # Habilita CORS para todas las rutas
 
 # Variable para almacenar el estado del joystick
 joystick_state = {
