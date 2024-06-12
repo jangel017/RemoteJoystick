@@ -8,9 +8,8 @@ CORS(app)  # Habilita CORS para todas las rutas
 
 # Variable para almacenar el estado del joystick
 joystick_state = {
-    'x': 128,  # Centro para el eje X
-    'y': 128,  # Centro para el eje Y
-    'buttons': [0] * 8  # Todos los botones no presionados
+    'axes': [0, 0, 0, 0],  # Ejemplo con 4 ejes
+    'buttons': [0] * 8  # Ejemplo con 8 botones
 }
 
 # Bloqueo para proteger el acceso concurrente a joystick_state
@@ -37,4 +36,4 @@ def emulate_joystick():
 threading.Thread(target=emulate_joystick, daemon=True).start()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000)  # Escuchar en todas las interfaces de red
