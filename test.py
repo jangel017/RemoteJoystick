@@ -30,7 +30,7 @@ def emulate_joystick():
         with lock:
             print('Current joystick state:', joystick_state)
             # Aquí puedes agregar la lógica para emular el joystick real
-        time.sleep(1)  # Esperar 1 segundo antes de la siguiente emulación
+        time.sleep(0.1)  # Esperar 1 segundo antes de la siguiente emulación
 
 # Iniciar el hilo de emulación del joystick
 threading.Thread(target=emulate_joystick, daemon=True).start()
