@@ -14,4 +14,4 @@ def handle_joystick_data(json):
     emit('response', {'status': 'received'})  # Responde al cliente
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000)  # Ejecutar en modo depuración
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)  # Ejecutar en modo depuración
