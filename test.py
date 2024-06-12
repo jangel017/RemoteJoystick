@@ -6,7 +6,7 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('simulate.html')
 
 @socketio.on('joystick_data')
 def handle_joystick_data(json):
