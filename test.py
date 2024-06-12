@@ -10,8 +10,8 @@ def index():
 
 @socketio.on('joystick_data')
 def handle_joystick_data(json):
-    print('Received joystick data:', json)
-    emit('response', {'status': 'received'})
+    print('Received joystick data:', json)  # Imprime los datos recibidos en la consola del servidor
+    emit('response', {'status': 'received'})  # Responde al cliente
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)  # Ejecutar en modo depuración
