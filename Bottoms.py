@@ -1,8 +1,8 @@
 import pygame
+import sys
 import json
 import os
 import time
-from vgamepad import vgamepad
 
 # Inicializar pygame
 pygame.init()
@@ -12,8 +12,13 @@ size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Joystick Simulator')
 
-# Crear una instancia de vgamepad
-gamepad = vgamepad.VGamepad()
+# Definir los colores
+black = (0, 0, 0)
+red = (255, 0, 0)
+
+# Definir la posición inicial del joystick
+joystick_x = width // 2
+joystick_y = height // 2
 
 # Escalar las entradas del joystick de -100 a 100 a la resolución de la pantalla
 def scale_input(value, max_screen_value):
@@ -30,20 +35,22 @@ while True:
         with open('joystick_data.json', 'r') as f:
             try:
                 data = json.load(f)
+                print("Data from JSON:", data)  # Agrega este mensaje de depuración para ver qué datos se están leyendo
                 key = data.get('key')
                 
                 # Ajusta los valores del joystick según la entrada del teclado
                 if key == 'ArrowUp':
-                    gamepad.press_button(vgamepad.button.UP)
+                    joystick_y = scale_input(-100, height)
                 elif key == 'ArrowDown':
-                    gamepad.press_button(vgamepad.button.DOWN)
+                    joystick_y = scale_input(100, height)
                 elif key == 'ArrowLeft':
-                    gamepad.press_button(vgamepad.button.LEFT)
+                    joystick_x = scale_input(-100, width)
                 elif key == 'ArrowRight':
-                    gamepad.press_button(vgamepad.button.RIGHT)
+                    joystick_x = scale_input(100, width)
                 else:
-                    # Liberar todos los botones si no se presiona ninguna tecla
-                    gamepad.release_all_buttons()
+                    # Reset joystick to center if no key pressed
+                    joystick_x = width // 2
+                    joystick_y = height // 2
             except json.JSONDecodeError:
                 print("Error decoding JSON")
     else:
@@ -53,13 +60,10 @@ while True:
     screen.fill(black)
 
     # Dibujar el joystick
-    pygame.draw.circle(screen, red, (width // 2, height // 2), 15)
+    pygame.draw.circle(screen, red, (joystick_x, joystick_y), 15)
 
     # Actualizar la pantalla
     pygame.display.flip()
 
     # Ralentizar el bucle para no consumir toda la CPU
     time.sleep(0.1)
-
-# Cerrar el gamepad al salir del bucle principal
-gamepad.close()
