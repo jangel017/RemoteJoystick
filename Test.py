@@ -36,4 +36,4 @@ if __name__ == '__main__':
         uinput.ABS_X + (0, 255, 0, 0),
         uinput.ABS_Y + (0, 255, 0, 0)
     ])
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5353, debug=True)
