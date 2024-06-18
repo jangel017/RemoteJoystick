@@ -1,69 +1,42 @@
-import pygame
-import sys
-import json
-import os
-import time
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+import uinput
 
-# Inicializar pygame
-pygame.init()
+app = Flask(__name__)
+socketio = SocketIO(app)
 
-# Definir el tamaño de la ventana
-size = width, height = 800, 600
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('Joystick Simulator')
+# Crear un joystick virtual con python-uinput
+device = uinput.Device([
+    uinput.BTN_JOYSTICK,
+    uinput.ABS_X + (-100, 100, 0, 0),
+    uinput.ABS_Y + (-100, 100, 0, 0)
+])
 
-# Definir los colores
-black = (0, 0, 0)
-red = (255, 0, 0)
+@app.route('/')
+def index():
+    return render_template('simulate.html')
 
-# Definir la posición inicial del joystick
-joystick_x = width // 2
-joystick_y = height // 2
+@socketio.on('joystick_data')
+def handle_joystick_data(json_data):
+    print('Received joystick data:', json_data)
 
-# Escalar las entradas del joystick de -100 a 100 a la resolución de la pantalla
-def scale_input(value, max_screen_value):
-    return int((value + 100) / 200 * max_screen_value)
+    x_value = 0
+    y_value = 0
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-    
-    # Leer los datos del archivo JSON
-    if os.path.exists('joystick_data.json'):
-        with open('joystick_data.json', 'r') as f:
-            try:
-                data = json.load(f)
-                print("Data from JSON:", data)  # Agrega este mensaje de depuración para ver qué datos se están leyendo
-                key = data.get('key')
-                
-                # Ajusta los valores del joystick según la entrada del teclado
-                if key == 'ArrowUp':
-                    joystick_y = scale_input(-100, height)
-                elif key == 'ArrowDown':
-                    joystick_y = scale_input(100, height)
-                elif key == 'ArrowLeft':
-                    joystick_x = scale_input(-100, width)
-                elif key == 'ArrowRight':
-                    joystick_x = scale_input(100, width)
-                else:
-                    # Reset joystick to center if no key pressed
-                    joystick_x = width // 2
-                    joystick_y = height // 2
-            except json.JSONDecodeError:
-                print("Error decoding JSON")
-    else:
-        print("JSON file not found")  # Agrega este mensaje de depuración si el archivo JSON no se encuentra
-    
-    # Limpiar la pantalla
-    screen.fill(black)
+    if 'ArrowUp' in json_data['keys']:
+        y_value = -100
+    elif 'ArrowDown' in json_data['keys']:
+        y_value = 100
+    if 'ArrowLeft' in json_data['keys']:
+        x_value = -100
+    elif 'ArrowRight' in json_data['keys']:
+        x_value = 100
 
-    # Dibujar el joystick
-    pygame.draw.circle(screen, red, (joystick_x, joystick_y), 15)
+    device.emit(uinput.ABS_X, x_value, syn=False)
+    device.emit(uinput.ABS_Y, y_value)
+    device.emit(uinput.BTN_JOYSTICK, 1)
 
-    # Actualizar la pantalla
-    pygame.display.flip()
+    emit('response', {'status': 'received'})
 
-    # Ralentizar el bucle para no consumir toda la CPU
-    time.sleep(0.1)
+if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
