@@ -20,8 +20,8 @@ def index():
 
 @socketio.on('joystick_data')
 def handle_joystick_data(json):
-    key = json.get('keys')  # Obtener el valor de la clave 'key' o None si no existe
-    if key is not None:
+    keys = json.get('keys')  # Obtener el valor de la clave 'key' o None si no existe
+    if keys is not None:
         # Procesar el valor de 'key' si existe
         print("Valor de 'keys' recibido:", keys)
 
