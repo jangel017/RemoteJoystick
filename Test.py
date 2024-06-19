@@ -19,4 +19,4 @@ def handle_joystick_data(json):
         print("La clave 'keys' no está presente en el diccionario recibido:", json)
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5353, debug=True)
