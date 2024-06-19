@@ -13,8 +13,8 @@ def index():
 
 @socketio.on('joystick_data')
 def handle_joystick_data(json):
-    key = json['key']
-    print('Received key:', key)
+    keys = json['keys']
+    print('Received keys:', keys)
     
     # Map the key to joystick buttons
     event_map = {
@@ -25,9 +25,9 @@ def handle_joystick_data(json):
         'a': uinput.BTN_A
     }
 
-    if key in event_map:
-        device.emit(event_map[key], 1)  # Press
-        device.emit(event_map[key], 0)  # Release
+    if keys in event_map:
+        device.emit(event_map[keys], 1)  # Press
+        device.emit(event_map[keys], 0)  # Release
 
 if __name__ == '__main__':
     # Create the uinput device
