@@ -20,10 +20,10 @@ def index():
 
 @socketio.on('joystick_data')
 def handle_joystick_data(json):
-    key = json.get('key')  # Obtener el valor de la clave 'key' o None si no existe
+    key = json.get('keys')  # Obtener el valor de la clave 'key' o None si no existe
     if key is not None:
         # Procesar el valor de 'key' si existe
-        print("Valor de 'key' recibido:", key)
+        print("Valor de 'keys' recibido:", keys)
 
         # Map the key to joystick buttons
         event_map = {
@@ -38,7 +38,7 @@ def handle_joystick_data(json):
             device.emit(event_map[key], 1)  # Press
             device.emit(event_map[key], 0)  # Release
     else:
-        print("La clave 'key' no está presente en el diccionario recibido:", json)
+        print("La clave 'keys' no está presente en el diccionario recibido:", json)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5353, debug=True)
