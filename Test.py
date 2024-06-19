@@ -34,9 +34,9 @@ def handle_joystick_data(json):
             'a': uinput.BTN_A
         }
 
-        if key in event_map:
-            device.emit(event_map[key], 1)  # Press
-            device.emit(event_map[key], 0)  # Release
+        if keys in event_map:
+            device.emit(event_map[keys], 1)  # Press
+            device.emit(event_map[keys], 0)  # Release
     else:
         print("La clave 'keys' no está presente en el diccionario recibido:", json)
 
